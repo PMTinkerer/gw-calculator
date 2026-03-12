@@ -5,13 +5,16 @@ Internal cleaning fee calculator for Grand Welcome of Southern Coastal Maine (Kn
 
 ## Tech Stack
 - Vanilla HTML/CSS/JavaScript (no framework)
-- SheetJS (xlsx) loaded from CDN for Excel export
+- ExcelJS loaded from CDN for Excel export (live formulas, multi-tab workbooks)
 - Hosted on GitHub Pages (static, no server)
 - No build step, no dependencies to install
 
 ## Project Structure
 - `index.html` — The entire application (single-page app)
+- `app.js` — All application logic: calculations, rendering, password protection, Excel export
+- `styles.css` — All styling
 - `CLAUDE.md` — This file. Project context for Claude Code.
+- `agent.md` — Project summary and change log
 - `README.md` — Public-facing repo description (deliberately vague)
 - `.gitignore` — Standard web project ignores
 
@@ -38,11 +41,18 @@ The app has three user-facing purposes:
 - Source URLs for supplies are internal procurement details — excluded from export.
 - The password protection is cosmetic (client-side hash check). The real security is that homeowners only ever see the exported Excel file, never the web tool.
 
+## Key Implementation Details
+- **Input events**: All property/cost inputs use `change` event (blur/tab/enter), not `input` (keystroke). This prevents premature recalculation and popup triggers.
+- **Airbnb cap threshold**: $625. When Community Fee exceeds this, the label auto-switches to "COMMUNITY FEE" and a popup explains entering it in Guesty. Edge-triggered (fires only on transition, not every recalc). Excel export always says "CLEANING FEE" regardless.
+- **Inspection time formula**: `(20 + bedrooms×15 + fullBaths×12 + halfBaths×8 + kitchens×25) / 60` hours. Web tool includes bedrooms; Excel export excludes bedrooms from the formula and breakdown.
+- **Excel export**: Two tabs (Turnover Cost, Supply Rates). Uses ExcelJS with live formulas — not hardcoded values. Never includes margin mechanics, actual rates, or "Community Fee" label.
+- **Supply Items table**: Visible to all users (not password-gated). Located between Export button and Settings button.
+
 ## Common Tasks
-- **Updating supply prices**: Edit the supplies data array in the JavaScript. Each item has costPerUnit, unitsPerStay, and roomType.
-- **Adding a new supply item**: Add to the supplies array with the correct roomType ("Kitchen", "Full Bath", or "Both"). Summary costs recalculate automatically.
-- **Changing fee rates per channel**: Edit the channels array in the per-channel P&L section.
-- **Changing the settings password**: Update the SHA-256 hash constant. See password manager for current password.
+- **Updating supply prices**: Edit the `SUPPLY_ITEMS` array in `app.js`. Each item has costPerUnit, unitsPerStay, and roomType.
+- **Adding a new supply item**: Add to `SUPPLY_ITEMS` with the correct roomType ("Kitchen", "Full Bath", or "Both"). Summary costs recalculate automatically.
+- **Changing fee rates per channel**: Edit the `CHANNELS` array in `app.js`.
+- **Changing the settings password**: Update the `SETTINGS_HASH` constant in `app.js`. See password manager for current password.
 
 ## Validation Baseline (sample property: 3 bed, 2 full bath, 1 half bath, 1 kitchen, $250 cleaning, 30 min drive, $20 basket, $50 linens)
 - Turnover Cost Total: ~$474.96
