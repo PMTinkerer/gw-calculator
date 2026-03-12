@@ -1,0 +1,369 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grand Welcome — Turnover Cost Calculator</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <header>
+        <h1>Grand Welcome — Turnover Cost Calculator</h1>
+        <p class="subtitle">Southern Coastal Maine</p>
+    </header>
+
+    <main>
+        <!-- Property Details -->
+        <section class="card">
+            <h2>Property Details</h2>
+            <div class="input-grid">
+                <div class="input-group wide">
+                    <label for="propertyName">Property Name</label>
+                    <input type="text" id="propertyName" value="Sample Property">
+                </div>
+                <div class="input-group">
+                    <label for="bedrooms">Bedrooms</label>
+                    <input type="number" id="bedrooms" value="3" min="0" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="fullBaths">Full Bathrooms</label>
+                    <input type="number" id="fullBaths" value="2" min="0" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="halfBaths">Half Bathrooms</label>
+                    <input type="number" id="halfBaths" value="1" min="0" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="kitchens">Kitchens</label>
+                    <input type="number" id="kitchens" value="1" min="0" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="cleaningCost">Cleaning Cost / Vendor ($)</label>
+                    <input type="number" id="cleaningCost" value="250" min="0" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="drivingMinutes">Driving Time, round-trip (min)</label>
+                    <input type="number" id="drivingMinutes" value="30" min="0" step="1">
+                </div>
+                <div class="input-group">
+                    <label for="welcomeBasket">Welcome Basket Cost ($)</label>
+                    <input type="number" id="welcomeBasket" value="20" min="0" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="linensCost">Linens Cost ($)</label>
+                    <input type="number" id="linensCost" value="50" min="0" step="0.01">
+                </div>
+            </div>
+        </section>
+
+        <!-- Cost Assumptions -->
+        <section class="card">
+            <h2>Cost Assumptions</h2>
+            <div class="input-grid">
+                <div class="input-group">
+                    <label for="inspectorRate">Inspector Rate ($/hr)</label>
+                    <input type="number" id="inspectorRate" value="30" min="0" step="0.01">
+                </div>
+                <div class="input-group">
+                    <label for="inspectionTime">Inspection Time (hrs)</label>
+                    <input type="number" id="inspectionTime" value="0" min="0" step="0.01">
+                    <span class="hint" id="suggestedTime">Suggested: —</span>
+                </div>
+                <div class="input-group wide inspection-breakdown">
+                    <label>Inspection Time Breakdown</label>
+                    <table class="breakdown-mini-table">
+                        <tbody>
+                            <tr><td>Base setup/walkthrough</td><td class="amount-col">20 min</td></tr>
+                            <tr><td>Bedrooms (<span id="breakBedCount">0</span> × 15 min)</td><td class="amount-col" id="breakBedTime">0 min</td></tr>
+                            <tr><td>Full Baths (<span id="breakFullBathCount">0</span> × 12 min)</td><td class="amount-col" id="breakFullBathTime">0 min</td></tr>
+                            <tr><td>Half Baths (<span id="breakHalfBathCount">0</span> × 8 min)</td><td class="amount-col" id="breakHalfBathTime">0 min</td></tr>
+                            <tr><td>Kitchens (<span id="breakKitchenCount">0</span> × 25 min)</td><td class="amount-col" id="breakKitchenTime">0 min</td></tr>
+                            <tr class="total-row"><td><strong>Total</strong></td><td class="amount-col" id="breakTotalTime"><strong>0 min</strong></td></tr>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="input-group">
+                    <label for="salesTax">Maine Sales Tax (%)</label>
+                    <input type="number" id="salesTax" value="5.5" min="0" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="handlingFactor">Supply Handling &amp; Waste (%)</label>
+                    <input type="number" id="handlingFactor" value="7.5" min="0" step="0.1">
+                </div>
+                <div class="input-group">
+                    <label for="achRate">ACH Payment (%)</label>
+                    <input type="number" id="achRate" value="2.5" min="0" step="0.1">
+                </div>
+            </div>
+        </section>
+
+        <!-- Turnover Cost Breakdown -->
+        <section class="card breakdown-card">
+            <h2>Turnover Cost Breakdown</h2>
+            <table class="breakdown-table">
+                <thead>
+                    <tr>
+                        <th>Line Item</th>
+                        <th class="amount-col">Amount</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>Professional Cleaning</td>
+                        <td class="amount-col" id="out-cleaning">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Supplies &amp; Restocking</td>
+                        <td class="amount-col" id="out-supplies">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Linens &amp; Replacement</td>
+                        <td class="amount-col" id="out-linens">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Quality Inspection</td>
+                        <td class="amount-col" id="out-inspection">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Travel / Mileage</td>
+                        <td class="amount-col" id="out-travel">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>Welcome Package</td>
+                        <td class="amount-col" id="out-welcome">$0.00</td>
+                    </tr>
+                    <tr>
+                        <td>ACH Processing Fee</td>
+                        <td class="amount-col" id="out-ach">$0.00</td>
+                    </tr>
+                </tbody>
+                <tfoot>
+                    <tr class="total-row">
+                        <td><strong>TURNOVER COST TOTAL</strong></td>
+                        <td class="amount-col" id="out-total"><strong>$0.00</strong></td>
+                    </tr>
+                    <tr>
+                        <td>Booking Platform Fees</td>
+                        <td class="amount-col" id="out-bookingFees">$0.00</td>
+                    </tr>
+                    <tr class="total-row community-fee-row">
+                        <td><strong id="feeLabel">CLEANING FEE</strong></td>
+                        <td class="amount-col" id="out-communityFee"><strong>$0.00</strong></td>
+                    </tr>
+                </tfoot>
+            </table>
+            <div class="community-fee-note-standalone" id="feeNote">Amount entered in Guesty as Cleaning Fee.</div>
+        </section>
+
+        <!-- Community Fee Popup -->
+        <div id="capModal" class="modal-overlay hidden">
+            <div class="modal-card">
+                <h3>Use "Community Fee" in Guesty</h3>
+                <p>This property's fee of <strong id="modalFeeAmount">$0.00</strong> exceeds Airbnb's cleaning fee cap of <strong>$625</strong>.</p>
+                <p>To bypass this cap, enter the amount in Guesty as a <strong>Community Fee</strong> instead of a Cleaning Fee. Airbnb does not cap Community Fees.</p>
+                <button id="capModalClose" class="btn-primary">Got it</button>
+            </div>
+        </div>
+
+        <!-- Actions -->
+        <section class="actions">
+            <button id="exportBtn" class="btn-primary">Export Owner Sheet</button>
+        </section>
+
+        <!-- Supply Items Reference -->
+        <section class="card">
+            <h2>Supply Items</h2>
+            <table class="supply-table" id="supplyTable">
+                <thead>
+                    <tr>
+                        <th>Item</th>
+                        <th>Cost/Unit</th>
+                        <th>Units/Stay</th>
+                        <th>Cost/Stay</th>
+                        <th>Room Type</th>
+                    </tr>
+                </thead>
+                <tbody id="supplyBody"></tbody>
+                <tfoot id="supplyFoot"></tfoot>
+            </table>
+        </section>
+
+        <!-- Settings Toggle -->
+        <section class="actions">
+            <button id="settingsBtn" class="btn-settings" title="Settings">&#9881; Settings</button>
+        </section>
+
+        <!-- Password Gate -->
+        <section id="passwordGate" class="card password-gate hidden">
+            <h2>Settings</h2>
+            <p>Enter password.</p>
+            <div class="password-row">
+                <input type="password" id="passwordInput" placeholder="Password">
+                <button id="unlockBtn" class="btn-primary">Unlock</button>
+            </div>
+            <p id="passwordError" class="error-text hidden">Incorrect password.</p>
+        </section>
+
+        <!-- Settings / Internal Section -->
+        <section id="settingsSection" class="hidden">
+            <div class="internal-banner">INTERNAL — NOT FOR OWNER DISTRIBUTION</div>
+
+            <!-- Internal Cost Assumptions -->
+            <div class="card internal-card">
+                <h2>Internal Cost Assumptions</h2>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="actualInspectorRate">Actual Inspector Rate ($/hr)</label>
+                        <input type="number" id="actualInspectorRate" value="25" min="0" step="0.01">
+                    </div>
+                    <div class="input-group">
+                        <label for="royaltyRate">Franchise Royalty Rate (%)</label>
+                        <input type="number" id="royaltyRate" value="9" min="0" step="0.1">
+                    </div>
+                    <div class="input-group">
+                        <label for="bookingFeeRate">Booking Fee Rate (%)</label>
+                        <input type="number" id="bookingFeeRate" value="19" min="0" step="0.1">
+                    </div>
+                </div>
+                <div class="pace-reference">
+                    <strong>Actual Inspection Pace:</strong> Beds 7min, Full Bath 5min, Half Bath 5min, Kitchen 20min
+                </div>
+                <div class="pace-reference">
+                    <strong>Actual Inspection Time:</strong> <span id="out-actualInspectionTime">—</span> hrs
+                </div>
+            </div>
+
+            <!-- True Cost Breakdown -->
+            <div class="card internal-card">
+                <h2>True Cost Breakdown</h2>
+                <table class="breakdown-table">
+                    <thead>
+                        <tr><th>Line Item</th><th class="amount-col">Amount</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Cleaning (Vendor)</td><td class="amount-col" id="out-trueCleaning">$0.00</td></tr>
+                        <tr><td>Consumables (base cost)</td><td class="amount-col" id="out-trueConsumables">$0.00</td></tr>
+                        <tr><td>Linens (base cost)</td><td class="amount-col" id="out-trueLinens">$0.00</td></tr>
+                        <tr><td>Inspection (actual)</td><td class="amount-col" id="out-trueInspection">$0.00</td></tr>
+                        <tr><td>Driving (actual)</td><td class="amount-col" id="out-trueDriving">$0.00</td></tr>
+                        <tr><td>Welcome Basket</td><td class="amount-col" id="out-trueWelcome">$0.00</td></tr>
+                        <tr><td>ACH Processing Fee</td><td class="amount-col" id="out-trueAch">$0.00</td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row"><td><strong>TOTAL TRUE COST</strong></td><td class="amount-col" id="out-trueCostTotal"><strong>$0.00</strong></td></tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Cost Variance Analysis -->
+            <div class="card internal-card">
+                <h2>Cost Variance Analysis</h2>
+                <table class="breakdown-table">
+                    <thead>
+                        <tr><th>Source</th><th class="amount-col">Amount</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Consumables overhead recovery</td><td class="amount-col" id="out-varConsumables">$0.00</td></tr>
+                        <tr><td>Linens overhead recovery</td><td class="amount-col" id="out-varLinens">$0.00</td></tr>
+                        <tr><td>Inspector rate variance</td><td class="amount-col" id="out-varInspectorRate">$0.00</td></tr>
+                        <tr><td>Inspection efficiency gain</td><td class="amount-col" id="out-varInspectionEfficiency">$0.00</td></tr>
+                        <tr><td>Travel rate variance</td><td class="amount-col" id="out-varTravelRate">$0.00</td></tr>
+                        <tr><td>ACH fee variance</td><td class="amount-col" id="out-varAch">$0.00</td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row"><td><strong>TOTAL OPERATING VARIANCE</strong></td><td class="amount-col" id="out-varianceTotal"><strong>$0.00</strong></td></tr>
+                    </tfoot>
+                </table>
+            </div>
+
+            <!-- Royalty & Net Margin -->
+            <div class="card internal-card">
+                <h2>Royalty &amp; Net Margin</h2>
+                <table class="breakdown-table">
+                    <tbody>
+                        <tr><td>Royalty Owed</td><td class="amount-col" id="out-royalty">$0.00</td></tr>
+                        <tr class="total-row"><td><strong>NET OPERATING MARGIN</strong></td><td class="amount-col" id="out-netMargin"><strong>$0.00</strong></td></tr>
+                    </tbody>
+                </table>
+                <div id="marginStatus" class="margin-status"></div>
+            </div>
+
+            <!-- Per-Channel P&L -->
+            <div class="card internal-card">
+                <h2>Per-Channel P&amp;L</h2>
+                <div class="table-scroll">
+                    <table class="channel-table" id="channelTable">
+                        <thead>
+                            <tr>
+                                <th>Channel</th>
+                                <th>OTA %</th>
+                                <th>Merchant %</th>
+                                <th>Advert. %</th>
+                                <th>Total Fee %</th>
+                                <th>Net Revenue</th>
+                                <th>Royalty</th>
+                                <th>Variance</th>
+                                <th>Variance %</th>
+                            </tr>
+                        </thead>
+                        <tbody id="channelBody"></tbody>
+                    </table>
+                </div>
+            </div>
+
+            <!-- Airbnb Cleaning Fee Cap Check -->
+            <div class="card internal-card">
+                <h2>Airbnb Cleaning Fee Cap Check</h2>
+                <div class="input-grid">
+                    <div class="input-group">
+                        <label for="nightlyRate">Nightly Rate ($)</label>
+                        <input type="number" id="nightlyRate" value="300" min="0" step="0.01">
+                    </div>
+                </div>
+                <table class="breakdown-table">
+                    <tbody>
+                        <tr><td>Airbnb Cap</td><td class="amount-col" id="out-airbnbCap">$0.00</td></tr>
+                        <tr><td>Community Fee</td><td class="amount-col" id="out-capCommunityFee">$0.00</td></tr>
+                        <tr><td>Exceeds Cap?</td><td class="amount-col" id="out-exceedsCap">—</td></tr>
+                        <tr><td>Min Nightly Rate to avoid cap</td><td class="amount-col" id="out-minNightlyRate">$0.00</td></tr>
+                    </tbody>
+                </table>
+                <p class="note">Community Fee bypasses this cap. Shown for reference only.</p>
+            </div>
+
+            <!-- Owner / Owner Guest Rate -->
+            <div class="card internal-card">
+                <h2>Owner / Owner Guest Rate</h2>
+                <table class="breakdown-table">
+                    <thead>
+                        <tr><th>Line Item</th><th class="amount-col">Amount</th></tr>
+                    </thead>
+                    <tbody>
+                        <tr><td>Cleaning</td><td class="amount-col" id="out-ownerCleaning">$0.00</td></tr>
+                        <tr><td>Inspection</td><td class="amount-col" id="out-ownerInspection">$0.00</td></tr>
+                        <tr><td>Travel</td><td class="amount-col" id="out-ownerTravel">$0.00</td></tr>
+                        <tr><td>Welcome Basket</td><td class="amount-col" id="out-ownerWelcome">$0.00</td></tr>
+                        <tr><td>Linens</td><td class="amount-col" id="out-ownerLinens">$0.00</td></tr>
+                        <tr><td>ACH Processing Fee</td><td class="amount-col" id="out-ownerAch">$0.00</td></tr>
+                    </tbody>
+                    <tfoot>
+                        <tr class="total-row"><td><strong>OWNER CLEAN RATE</strong></td><td class="amount-col" id="out-ownerTotal"><strong>$0.00</strong></td></tr>
+                    </tfoot>
+                </table>
+                <p class="note">No consumables, no gross-up, no royalty.</p>
+            </div>
+
+            <div class="actions">
+                <button id="lockBtn" class="btn-lock">Lock Settings</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; Grand Welcome of Southern Coastal Maine</p>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/npm/exceljs@4.4.0/dist/exceljs.min.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>
