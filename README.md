@@ -2,4 +2,4 @@
 
 Internal turnover cost calculator for Grand Welcome of Southern Coastal Maine.
 
-Hosted at: [GitHub Pages URL will go here after deployment]
+Hosted at: https://pmtinkerer.github.io/gw-calculator/
