@@ -1,0 +1,538 @@
+/* === Base Reset & Typography === */
+*, *::before, *::after {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    background: #f0f2f5;
+    color: #333;
+    line-height: 1.5;
+    padding-bottom: 2rem;
+}
+
+/* === Header === */
+header {
+    background: #1F3864;
+    color: #fff;
+    padding: 1.5rem 2rem;
+    text-align: center;
+}
+
+header h1 {
+    font-size: 1.6rem;
+    font-weight: 600;
+    letter-spacing: 0.02em;
+}
+
+header .subtitle {
+    font-size: 0.9rem;
+    opacity: 0.8;
+    margin-top: 0.25rem;
+}
+
+/* === Main Layout === */
+main {
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 1.5rem 1rem;
+}
+
+/* === Cards === */
+.card {
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    padding: 1.5rem;
+    margin-bottom: 1.25rem;
+}
+
+.card h2 {
+    font-size: 1.1rem;
+    color: #1F3864;
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid #e8ecf1;
+}
+
+/* === Input Grid === */
+.input-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 1rem;
+}
+
+.input-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.input-group.wide {
+    grid-column: 1 / -1;
+    max-width: 400px;
+}
+
+.input-group label {
+    font-size: 0.8rem;
+    font-weight: 600;
+    color: #555;
+    margin-bottom: 0.3rem;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+}
+
+.input-group input {
+    padding: 0.5rem 0.6rem;
+    border: 1px solid #ccd0d5;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    color: #1a5276;
+    font-weight: 500;
+    background: #fafbfc;
+    transition: border-color 0.15s;
+}
+
+.input-group input:focus {
+    outline: none;
+    border-color: #1F3864;
+    box-shadow: 0 0 0 2px rgba(31,56,100,0.15);
+}
+
+.input-group input[type="number"] {
+    text-align: right;
+}
+
+.input-group input[type="text"] {
+    text-align: left;
+}
+
+.hint {
+    font-size: 0.75rem;
+    color: #888;
+    margin-top: 0.2rem;
+}
+
+/* === Breakdown Tables === */
+.breakdown-card {
+    border: 2px solid #1F3864;
+}
+
+.breakdown-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.breakdown-table th {
+    text-align: left;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    color: #666;
+    padding: 0.5rem 0.75rem;
+    border-bottom: 2px solid #e8ecf1;
+}
+
+.breakdown-table td {
+    padding: 0.6rem 0.75rem;
+    font-size: 0.95rem;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.breakdown-table tbody tr:nth-child(even) {
+    background: #fafbfc;
+}
+
+.breakdown-table .amount-col {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.breakdown-table th.amount-col {
+    text-align: right;
+}
+
+.total-row {
+    background: #f0f4f8 !important;
+    border-top: 2px solid #1F3864;
+}
+
+.total-row td {
+    padding-top: 0.75rem;
+    padding-bottom: 0.75rem;
+    font-size: 1.05rem;
+    border-bottom: none;
+}
+
+/* === Community Fee Row === */
+.community-fee-row {
+    background: #1F3864 !important;
+    color: #fff;
+}
+
+.community-fee-row td {
+    color: #fff;
+    font-size: 1.15rem;
+    padding-top: 0.85rem;
+    padding-bottom: 0.85rem;
+    border-top: 2px solid #1F3864;
+}
+
+.community-fee-note-standalone {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 0.5rem;
+    text-align: right;
+    font-style: italic;
+}
+
+/* === Actions === */
+.actions {
+    display: flex;
+    gap: 1rem;
+    align-items: center;
+    margin-bottom: 1.25rem;
+    flex-wrap: wrap;
+}
+
+.btn-primary {
+    background: #1F3864;
+    color: #fff;
+    border: none;
+    padding: 0.65rem 1.5rem;
+    border-radius: 5px;
+    font-size: 0.95rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s;
+}
+
+.btn-primary:hover {
+    background: #163052;
+}
+
+.btn-settings {
+    background: none;
+    border: 1px solid #ccc;
+    padding: 0.55rem 1rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-settings:hover {
+    border-color: #1F3864;
+    color: #1F3864;
+}
+
+.btn-lock {
+    background: #dc3545;
+    color: #fff;
+    border: none;
+    padding: 0.6rem 1.5rem;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-lock:hover {
+    background: #c82333;
+}
+
+/* === Password Gate === */
+.password-gate {
+    text-align: center;
+}
+
+.password-gate p {
+    margin-bottom: 0.75rem;
+    color: #666;
+}
+
+.password-row {
+    display: flex;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.password-row input {
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #ccd0d5;
+    border-radius: 4px;
+    font-size: 0.95rem;
+    width: 200px;
+}
+
+.error-text {
+    color: #dc3545;
+    font-size: 0.85rem;
+    margin-top: 0.5rem;
+}
+
+/* === Internal Banner === */
+.internal-banner {
+    background: #dc3545;
+    color: #fff;
+    text-align: center;
+    padding: 0.6rem;
+    font-weight: 700;
+    font-size: 0.9rem;
+    letter-spacing: 0.1em;
+    border-radius: 6px;
+    margin-bottom: 1.25rem;
+}
+
+.internal-card {
+    background: #fffdf5;
+    border-left: 4px solid #e67e22;
+}
+
+.internal-card h2 {
+    color: #7d4e00;
+    border-bottom-color: #f0e0c0;
+}
+
+.pace-reference {
+    font-size: 0.85rem;
+    color: #666;
+    margin-top: 0.5rem;
+}
+
+/* === Margin Status === */
+.margin-status {
+    margin-top: 0.75rem;
+    padding: 0.75rem;
+    border-radius: 5px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.margin-status.covered {
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+}
+
+.margin-status.short {
+    background: #f8d7da;
+    color: #721c24;
+    border: 1px solid #f5c6cb;
+}
+
+/* === Channel Table === */
+.table-scroll {
+    overflow-x: auto;
+}
+
+.channel-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    min-width: 700px;
+}
+
+.channel-table th {
+    background: #f5f0e0;
+    padding: 0.5rem 0.5rem;
+    text-align: right;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #666;
+    border-bottom: 2px solid #e0d8c0;
+    white-space: nowrap;
+}
+
+.channel-table th:first-child {
+    text-align: left;
+}
+
+.channel-table td {
+    padding: 0.45rem 0.5rem;
+    text-align: right;
+    border-bottom: 1px solid #f0ece0;
+    font-variant-numeric: tabular-nums;
+}
+
+.channel-table td:first-child {
+    text-align: left;
+    font-weight: 500;
+}
+
+.channel-table tbody tr:nth-child(even) {
+    background: #fdfbf5;
+}
+
+.channel-table input {
+    width: 55px;
+    text-align: right;
+    padding: 0.2rem 0.3rem;
+    border: 1px solid #ddd;
+    border-radius: 3px;
+    font-size: 0.85rem;
+    color: #1a5276;
+    background: #fff;
+}
+
+.channel-table input:focus {
+    outline: none;
+    border-color: #1F3864;
+}
+
+/* === Supply Table === */
+.supply-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+}
+
+.supply-table th {
+    background: #f5f0e0;
+    padding: 0.5rem 0.5rem;
+    text-align: right;
+    font-size: 0.75rem;
+    text-transform: uppercase;
+    color: #666;
+    border-bottom: 2px solid #e0d8c0;
+}
+
+.supply-table th:first-child,
+.supply-table th:last-child {
+    text-align: left;
+}
+
+.supply-table td {
+    padding: 0.4rem 0.5rem;
+    text-align: right;
+    border-bottom: 1px solid #f0ece0;
+    font-variant-numeric: tabular-nums;
+}
+
+.supply-table td:first-child,
+.supply-table td:last-child {
+    text-align: left;
+}
+
+.supply-table tbody tr:nth-child(even) {
+    background: #fdfbf5;
+}
+
+.supply-table tfoot td {
+    font-weight: 600;
+    border-top: 2px solid #e0d8c0;
+    padding-top: 0.5rem;
+}
+
+/* === Inspection Breakdown Mini Table === */
+.inspection-breakdown {
+    max-width: 360px;
+}
+
+.breakdown-mini-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.85rem;
+    margin-top: 0.25rem;
+}
+
+.breakdown-mini-table td {
+    padding: 0.25rem 0.5rem;
+    border-bottom: 1px solid #f0f2f5;
+}
+
+.breakdown-mini-table .amount-col {
+    text-align: right;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+.breakdown-mini-table .total-row {
+    border-top: 2px solid #1F3864;
+    background: #f0f4f8;
+}
+
+.breakdown-mini-table .total-row td {
+    padding-top: 0.4rem;
+    padding-bottom: 0.4rem;
+    border-bottom: none;
+}
+
+/* === Modal === */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.5);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+}
+
+.modal-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 2rem;
+    max-width: 460px;
+    width: 90%;
+    box-shadow: 0 8px 32px rgba(0, 0, 0, 0.25);
+    text-align: center;
+}
+
+.modal-card h3 {
+    color: #1F3864;
+    font-size: 1.15rem;
+    margin-bottom: 1rem;
+}
+
+.modal-card p {
+    font-size: 0.95rem;
+    color: #444;
+    line-height: 1.6;
+    margin-bottom: 0.75rem;
+}
+
+.modal-card .btn-primary {
+    margin-top: 0.75rem;
+}
+
+/* === Utility === */
+.hidden {
+    display: none !important;
+}
+
+.note {
+    font-size: 0.8rem;
+    color: #888;
+    margin-top: 0.5rem;
+    font-style: italic;
+}
+
+/* === Footer === */
+footer {
+    text-align: center;
+    padding: 1.5rem;
+    color: #999;
+    font-size: 0.8rem;
+}
+
+/* === Responsive === */
+@media (max-width: 600px) {
+    .input-grid {
+        grid-template-columns: 1fr;
+    }
+
+    header h1 {
+        font-size: 1.2rem;
+    }
+
+    .community-fee-value {
+        font-size: 1.8rem;
+    }
+}
