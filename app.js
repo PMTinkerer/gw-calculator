@@ -608,7 +608,7 @@ async function exportExcel() {
     wsTurnover.getCell(row, 2).numFmt = pctFmt;
     const taxRow = row;
     row++;
-    wsTurnover.getCell(row, 1).value = 'Supply Handling & Waste Factor';
+    wsTurnover.getCell(row, 1).value = 'Procurement, Handling & Waste Allowance';
     wsTurnover.getCell(row, 1).font = dataFont;
     wsTurnover.getCell(row, 2).value = s.handlingFactor / 100;
     wsTurnover.getCell(row, 2).font = inputFont;
@@ -649,6 +649,18 @@ async function exportExcel() {
     wsTurnover.getCell(row, 2).font = inputFont;
     wsTurnover.getCell(row, 2).numFmt = currencyFmt;
     const welcomeCostRow = row;
+    row++;
+
+    // Footnote explaining the 7.5% allowance
+    const footnoteFont = { name: 'Arial', size: 9, italic: true, color: { argb: 'FF888888' } };
+    wsTurnover.getCell(row, 1).value = 'The 7.5% allowance covers: procurement overhead (ordering, vendor management),';
+    wsTurnover.getCell(row, 1).font = footnoteFont;
+    row++;
+    wsTurnover.getCell(row, 1).value = 'transportation & handling (delivery to property), breakage, spoilage & partial-use';
+    wsTurnover.getCell(row, 1).font = footnoteFont;
+    row++;
+    wsTurnover.getCell(row, 1).value = 'waste, inventory shrinkage, and storage costs.';
+    wsTurnover.getCell(row, 1).font = footnoteFont;
     row += 2;
 
     // Raw supply cost reference
