@@ -100,7 +100,7 @@ function recalculate() {
     r.halfBathCostPerStay = sc.halfBathCost;
 
     // Inspection times
-    r.suggestedTime = (20 + s.bedrooms * 15 + s.fullBaths * 12 + s.halfBaths * 8 + s.kitchens * 25) / 60;
+    r.suggestedTime = (20 + s.bedrooms * 12.5 + s.fullBaths * 12 + s.halfBaths * 8 + s.kitchens * 25) / 60;
     r.actualTime = (s.bedrooms * 7 + s.fullBaths * 5 + s.halfBaths * 5 + s.kitchens * 20) / 60;
 
     // If not overridden, sync inspection time to suggested
@@ -204,11 +204,11 @@ function renderResults() {
     setOutput('breakFullBathCount', s.fullBaths);
     setOutput('breakHalfBathCount', s.halfBaths);
     setOutput('breakKitchenCount', s.kitchens);
-    setOutput('breakBedTime', (s.bedrooms * 15) + ' min');
+    setOutput('breakBedTime', (s.bedrooms * 12.5) + ' min');
     setOutput('breakFullBathTime', (s.fullBaths * 12) + ' min');
     setOutput('breakHalfBathTime', (s.halfBaths * 8) + ' min');
     setOutput('breakKitchenTime', (s.kitchens * 25) + ' min');
-    setOutput('breakTotalTime', (20 + s.bedrooms * 15 + s.fullBaths * 12 + s.halfBaths * 8 + s.kitchens * 25) + ' min');
+    setOutput('breakTotalTime', (20 + s.bedrooms * 12.5 + s.fullBaths * 12 + s.halfBaths * 8 + s.kitchens * 25) + ' min');
 
     // Owner-facing breakdown
     setOutput('out-cleaning', fmt$(r.ownerCleaning));
@@ -511,6 +511,12 @@ async function exportExcel() {
     wsTurnover.getCell(row, 2).font = inputFont;
     const halfBathsRow = row;
     row++;
+    wsTurnover.getCell(row, 1).value = 'Bedrooms';
+    wsTurnover.getCell(row, 1).font = dataFont;
+    wsTurnover.getCell(row, 2).value = s.bedrooms;
+    wsTurnover.getCell(row, 2).font = inputFont;
+    const bedroomsRow = row;
+    row++;
     wsTurnover.getCell(row, 1).value = 'Kitchens';
     wsTurnover.getCell(row, 1).font = dataFont;
     wsTurnover.getCell(row, 2).value = s.kitchens;
@@ -532,45 +538,62 @@ async function exportExcel() {
     row++;
     wsTurnover.getCell(row, 1).value = 'Inspection Time (hrs)';
     wsTurnover.getCell(row, 1).font = dataFont;
-    wsTurnover.getCell(row, 2).value = { formula: `(20+B${fullBathsRow}*12+B${halfBathsRow}*8+B${kitchensRow}*25)/60` };
-    wsTurnover.getCell(row, 2).font = formulaFont;
-    wsTurnover.getCell(row, 2).numFmt = '0.00';
     const timeRow = row;
     row++;
 
-    // Inspection time breakdown
+    // Inspection time breakdown — all formula-driven
     const breakdownFont = { name: 'Arial', size: 9, color: { argb: 'FF888888' } };
+    const breakdownNumFmt = '0 "min"';
     wsTurnover.getCell(row, 1).value = '   Base setup/walkthrough';
     wsTurnover.getCell(row, 1).font = breakdownFont;
-    wsTurnover.getCell(row, 2).value = '20 min';
+    wsTurnover.getCell(row, 2).value = 20;
     wsTurnover.getCell(row, 2).font = breakdownFont;
+    wsTurnover.getCell(row, 2).numFmt = breakdownNumFmt;
+    wsTurnover.getCell(row, 2).alignment = { horizontal: 'right' };
+    const baseSetupRow = row;
+    row++;
+    wsTurnover.getCell(row, 1).value = '   Full Baths';
+    wsTurnover.getCell(row, 1).font = breakdownFont;
+    wsTurnover.getCell(row, 2).value = { formula: `B${fullBathsRow}*12` };
+    wsTurnover.getCell(row, 2).font = breakdownFont;
+    wsTurnover.getCell(row, 2).numFmt = breakdownNumFmt;
     wsTurnover.getCell(row, 2).alignment = { horizontal: 'right' };
     row++;
-    wsTurnover.getCell(row, 1).value = `   Full Baths (${s.fullBaths} × 12 min)`;
+    wsTurnover.getCell(row, 1).value = '   Half Baths';
     wsTurnover.getCell(row, 1).font = breakdownFont;
-    wsTurnover.getCell(row, 2).value = (s.fullBaths * 12) + ' min';
+    wsTurnover.getCell(row, 2).value = { formula: `B${halfBathsRow}*8` };
     wsTurnover.getCell(row, 2).font = breakdownFont;
+    wsTurnover.getCell(row, 2).numFmt = breakdownNumFmt;
     wsTurnover.getCell(row, 2).alignment = { horizontal: 'right' };
     row++;
-    wsTurnover.getCell(row, 1).value = `   Half Baths (${s.halfBaths} × 8 min)`;
+    wsTurnover.getCell(row, 1).value = '   Bedrooms';
     wsTurnover.getCell(row, 1).font = breakdownFont;
-    wsTurnover.getCell(row, 2).value = (s.halfBaths * 8) + ' min';
+    wsTurnover.getCell(row, 2).value = { formula: `B${bedroomsRow}*12.5` };
     wsTurnover.getCell(row, 2).font = breakdownFont;
+    wsTurnover.getCell(row, 2).numFmt = breakdownNumFmt;
     wsTurnover.getCell(row, 2).alignment = { horizontal: 'right' };
     row++;
-    wsTurnover.getCell(row, 1).value = `   Kitchens (${s.kitchens} × 25 min)`;
+    wsTurnover.getCell(row, 1).value = '   Kitchens';
     wsTurnover.getCell(row, 1).font = breakdownFont;
-    wsTurnover.getCell(row, 2).value = (s.kitchens * 25) + ' min';
+    wsTurnover.getCell(row, 2).value = { formula: `B${kitchensRow}*25` };
     wsTurnover.getCell(row, 2).font = breakdownFont;
+    wsTurnover.getCell(row, 2).numFmt = breakdownNumFmt;
     wsTurnover.getCell(row, 2).alignment = { horizontal: 'right' };
+    const kitchenBreakRow = row;
     row++;
     wsTurnover.getCell(row, 1).value = '   Total';
     wsTurnover.getCell(row, 1).font = { name: 'Arial', size: 9, bold: true, color: { argb: 'FF888888' } };
-    const totalMin = 20 + s.fullBaths * 12 + s.halfBaths * 8 + s.kitchens * 25;
-    wsTurnover.getCell(row, 2).value = totalMin + ' min (' + (totalMin / 60).toFixed(2) + ' hrs)';
+    wsTurnover.getCell(row, 2).value = { formula: `SUM(B${baseSetupRow}:B${kitchenBreakRow})` };
     wsTurnover.getCell(row, 2).font = { name: 'Arial', size: 9, bold: true, color: { argb: 'FF888888' } };
+    wsTurnover.getCell(row, 2).numFmt = breakdownNumFmt;
     wsTurnover.getCell(row, 2).alignment = { horizontal: 'right' };
+    const totalMinRow = row;
     row++;
+
+    // Set Inspection Time formula — derives from breakdown total
+    wsTurnover.getCell(timeRow, 2).value = { formula: `B${totalMinRow}/60` };
+    wsTurnover.getCell(timeRow, 2).font = formulaFont;
+    wsTurnover.getCell(timeRow, 2).numFmt = '0.00';
 
     wsTurnover.getCell(row, 1).value = 'Driving Time (minutes)';
     wsTurnover.getCell(row, 1).font = dataFont;

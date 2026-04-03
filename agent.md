@@ -71,6 +71,23 @@ Internal turnover cost calculator for **Grand Welcome of Southern Coastal Maine*
 - Removed bedrooms from Excel inspection time breakdown
 - Updated total minutes calculation to exclude bedrooms
 
+### Session 2 — Documentation & Pages Fix (March 2026)
+
+**Documentation:**
+- Created `agent.md` (this file) with full project summary and change log
+- Updated `CLAUDE.md` with current tech stack (ExcelJS), complete file listing, key implementation details section, and accurate common tasks
+- Set up Claude Code memory system with user profile, feedback rules, and project references
+
+**GitHub Pages Fix:**
+- Pages was returning 404 because it was configured with `build_type: "workflow"` (requires GitHub Actions) but no workflow existed
+- Fixed by deleting the Pages config and recreating it with `build_type: "legacy"` (deploys directly from main branch)
+- Pushed documentation commit to trigger fresh build
+
+**Status at end of session:**
+- All features working and deployed
+- 3 commits on main: initial build, README URL update, documentation update
+- `.claude/` directory exists locally but is not committed (gitignored)
+
 ---
 
 ## Architecture Notes

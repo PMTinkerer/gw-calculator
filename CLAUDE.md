@@ -44,7 +44,7 @@ The app has three user-facing purposes:
 ## Key Implementation Details
 - **Input events**: All property/cost inputs use `change` event (blur/tab/enter), not `input` (keystroke). This prevents premature recalculation and popup triggers.
 - **Airbnb cap threshold**: $625. When Community Fee exceeds this, the label auto-switches to "COMMUNITY FEE" and a popup explains entering it in Guesty. Edge-triggered (fires only on transition, not every recalc). Excel export always says "CLEANING FEE" regardless.
-- **Inspection time formula**: `(20 + bedrooms×15 + fullBaths×12 + halfBaths×8 + kitchens×25) / 60` hours. Web tool includes bedrooms; Excel export excludes bedrooms from the formula and breakdown.
+- **Inspection time formula**: `(20 + bedrooms×12.5 + fullBaths×12 + halfBaths×8 + kitchens×25) / 60` hours. Excel export uses fully formula-driven breakdown chain (individual room minutes → SUM total → total/60 hrs → downstream costs).
 - **Excel export**: Two tabs (Turnover Cost, Supply Rates). Uses ExcelJS with live formulas — not hardcoded values. Never includes margin mechanics, actual rates, or "Community Fee" label.
 - **Supply Items table**: Visible to all users (not password-gated). Located between Export button and Settings button.
 
