@@ -100,7 +100,7 @@ function recalculate() {
     r.halfBathCostPerStay = sc.halfBathCost;
 
     // Inspection times
-    r.suggestedTime = (20 + s.bedrooms * 12.5 + s.fullBaths * 12 + s.halfBaths * 8 + s.kitchens * 25) / 60;
+    r.suggestedTime = (20 + s.bedrooms * 15 + s.fullBaths * 12 + s.halfBaths * 8 + s.kitchens * 25) / 60;
     r.actualTime = (s.bedrooms * 7 + s.fullBaths * 5 + s.halfBaths * 5 + s.kitchens * 20) / 60;
 
     // If not overridden, sync inspection time to suggested
@@ -204,11 +204,11 @@ function renderResults() {
     setOutput('breakFullBathCount', s.fullBaths);
     setOutput('breakHalfBathCount', s.halfBaths);
     setOutput('breakKitchenCount', s.kitchens);
-    setOutput('breakBedTime', (s.bedrooms * 12.5) + ' min');
+    setOutput('breakBedTime', (s.bedrooms * 15) + ' min');
     setOutput('breakFullBathTime', (s.fullBaths * 12) + ' min');
     setOutput('breakHalfBathTime', (s.halfBaths * 8) + ' min');
     setOutput('breakKitchenTime', (s.kitchens * 25) + ' min');
-    setOutput('breakTotalTime', (20 + s.bedrooms * 12.5 + s.fullBaths * 12 + s.halfBaths * 8 + s.kitchens * 25) + ' min');
+    setOutput('breakTotalTime', (20 + s.bedrooms * 15 + s.fullBaths * 12 + s.halfBaths * 8 + s.kitchens * 25) + ' min');
 
     // Owner-facing breakdown
     setOutput('out-cleaning', fmt$(r.ownerCleaning));
@@ -568,7 +568,7 @@ async function exportExcel() {
     row++;
     wsTurnover.getCell(row, 1).value = '   Bedrooms';
     wsTurnover.getCell(row, 1).font = breakdownFont;
-    wsTurnover.getCell(row, 2).value = { formula: `B${bedroomsRow}*12.5` };
+    wsTurnover.getCell(row, 2).value = { formula: `B${bedroomsRow}*15` };
     wsTurnover.getCell(row, 2).font = breakdownFont;
     wsTurnover.getCell(row, 2).numFmt = breakdownNumFmt;
     wsTurnover.getCell(row, 2).alignment = { horizontal: 'right' };
