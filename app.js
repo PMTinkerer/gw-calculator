@@ -40,15 +40,15 @@ const SETTINGS_HASH = 'd231022be418a8bbf6d1623be0e8779e77e2856365e1b4fd8c6be6991
 // --- State ---
 const STATE = {
     // Property details
-    propertyName: 'Sample Property',
-    bedrooms: 3,
-    fullBaths: 2,
-    halfBaths: 1,
-    kitchens: 1,
-    cleaningCost: 250,
+    propertyName: '',
+    bedrooms: 0,
+    fullBaths: 0,
+    halfBaths: 0,
+    kitchens: 0,
+    cleaningCost: 0,
     drivingMinutes: 30,
     welcomeBasket: 20,
-    linensCost: 50,
+    linensCost: 0,
 
     // Cost assumptions (owner-facing)
     inspectorRate: 30,
