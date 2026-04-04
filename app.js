@@ -944,6 +944,9 @@ function init() {
     document.getElementById('capModalClose').addEventListener('click', () => {
         document.getElementById('capModal').classList.add('hidden');
     });
+    document.getElementById('internalWarningClose').addEventListener('click', () => {
+        document.getElementById('internalWarning').classList.add('hidden');
+    });
 
     // Enter key on password field
     document.getElementById('passwordInput').addEventListener('keydown', (e) => {
