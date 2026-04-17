@@ -39,6 +39,7 @@ const SETTINGS_HASHES = new Set([
     'd231022be418a8bbf6d1623be0e8779e77e2856365e1b4fd8c6be699155b88e3', // gw2026
     '39db5ecf48cdb26b15ab650f11bdea146e6caa0a172040ea50ae9fe2b313f641', // juan26
 ]);
+const MAX_BOOKING_FEE_RATE = 99.9;
 
 // --- State ---
 const STATE = {
@@ -74,6 +75,32 @@ const STATE = {
     wasOverCap: false,
 };
 
+function clampNumber(value, min = Number.NEGATIVE_INFINITY, max = Number.POSITIVE_INFINITY) {
+    let next = Number.isFinite(value) ? value : 0;
+
+    if (Number.isFinite(min)) next = Math.max(next, min);
+    if (Number.isFinite(max)) next = Math.min(next, max);
+
+    return next;
+}
+
+function readAndClampInputValue(el, config) {
+    if (config.type === 'text') return el.value;
+
+    let value = config.type === 'int' ? parseInt(el.value, 10) : parseFloat(el.value);
+    const min = el.min === '' ? Number.NEGATIVE_INFINITY : parseFloat(el.min);
+    const max = el.max === '' ? Number.POSITIVE_INFINITY : parseFloat(el.max);
+
+    value = clampNumber(value, min, max);
+
+    if (config.type === 'int') {
+        value = Math.round(value);
+    }
+
+    el.value = String(value);
+    return value;
+}
+
 // ============================================================
 // Calculation Engine
 // ============================================================
@@ -95,6 +122,7 @@ function computeSupplyCosts() {
 function recalculate() {
     const s = STATE;
     const r = {};
+    const bookingFeeRate = clampNumber(s.bookingFeeRate, 0, MAX_BOOKING_FEE_RATE);
 
     // Supply costs per room type
     const sc = computeSupplyCosts();
@@ -130,7 +158,7 @@ function recalculate() {
     r.turnoverTotal = r.ownerCleaning + r.ownerSupplies + r.ownerLinens + r.ownerInspection + r.ownerTravel + r.ownerWelcome + r.ownerAch;
 
     // Community Fee (gross-up)
-    r.communityFee = r.turnoverTotal / (1 - s.bookingFeeRate / 100);
+    r.communityFee = r.turnoverTotal / (1 - bookingFeeRate / 100);
     r.bookingFees = r.communityFee - r.turnoverTotal;
 
     // True cost (internal)
@@ -279,6 +307,9 @@ function renderResults() {
         if (r.netMargin >= 0) {
             statusEl.className = 'margin-status covered';
             statusEl.textContent = 'COVERED \u2014 operating margin exceeds royalty by ' + fmt$(r.netMargin);
+        } else if (STATE.inspectorRate <= 0) {
+            statusEl.className = 'margin-status short';
+            statusEl.textContent = 'SHORT \u2014 set inspector rate above $0/hr to estimate extra minutes';
         } else {
             const shortfall = Math.abs(r.netMargin);
             const minExtra = Math.ceil(shortfall / STATE.inspectorRate * 60);
@@ -317,9 +348,9 @@ function renderChannelTable() {
         const tr = document.createElement('tr');
         tr.innerHTML = `
             <td>${ch.name}</td>
-            <td><input type="number" step="0.1" value="${ch.ota}" data-channel="${i}" data-field="ota"></td>
-            <td><input type="number" step="0.1" value="${ch.merchant}" data-channel="${i}" data-field="merchant"></td>
-            <td><input type="number" step="0.1" value="${ch.advertising}" data-channel="${i}" data-field="advertising"></td>
+            <td><input type="number" min="0" max="100" step="0.1" value="${ch.ota}" data-channel="${i}" data-field="ota"></td>
+            <td><input type="number" min="0" max="100" step="0.1" value="${ch.merchant}" data-channel="${i}" data-field="merchant"></td>
+            <td><input type="number" min="0" max="100" step="0.1" value="${ch.advertising}" data-channel="${i}" data-field="advertising"></td>
             <td>${fmtPct(ch.totalFee)}</td>
             <td>${fmt$(ch.netRevenue)}</td>
             <td>${fmt$(ch.royalty)}</td>
@@ -334,7 +365,15 @@ function renderChannelTable() {
         input.addEventListener('input', (e) => {
             const idx = parseInt(e.target.dataset.channel);
             const field = e.target.dataset.field;
-            CHANNELS[idx][field] = parseFloat(e.target.value) || 0;
+            const rawValue = parseFloat(e.target.value);
+            if (!Number.isFinite(rawValue)) return;
+
+            const value = clampNumber(rawValue, 0, 100);
+            if (value !== rawValue) {
+                e.target.value = String(value);
+            }
+
+            CHANNELS[idx][field] = value;
             recalculate();
             renderResults();
         });
@@ -435,6 +474,7 @@ function showPasswordGate() {
 async function exportExcel() {
     const s = STATE;
     const r = s.results;
+    const bookingFeeRate = clampNumber(s.bookingFeeRate, 0, MAX_BOOKING_FEE_RATE);
     const wb = new ExcelJS.Workbook();
     wb.creator = 'Grand Welcome';
     wb.created = new Date();
@@ -627,7 +667,7 @@ async function exportExcel() {
     row++;
     wsTurnover.getCell(row, 1).value = 'Booking Platform Fee Rate';
     wsTurnover.getCell(row, 1).font = dataFont;
-    wsTurnover.getCell(row, 2).value = s.bookingFeeRate / 100;
+    wsTurnover.getCell(row, 2).value = bookingFeeRate / 100;
     wsTurnover.getCell(row, 2).font = inputFont;
     wsTurnover.getCell(row, 2).numFmt = pctFmt;
     const bookingFeeRow = row;
@@ -916,13 +956,7 @@ function init() {
         const el = document.getElementById(id);
         if (!el) continue;
         el.addEventListener('change', () => {
-            if (config.type === 'text') {
-                STATE[config.key] = el.value;
-            } else if (config.type === 'int') {
-                STATE[config.key] = parseInt(el.value) || 0;
-            } else {
-                STATE[config.key] = parseFloat(el.value) || 0;
-            }
+            STATE[config.key] = readAndClampInputValue(el, config);
 
             if (config.override) {
                 // User manually edited inspection time
