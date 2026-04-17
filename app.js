@@ -34,8 +34,11 @@ const CHANNELS = [
     { name: 'Verbal',         ota: 0,    merchant: 0,   advertising: 1.5 },
 ];
 
-// --- Password Hash (Password Hash) ---
-const SETTINGS_HASH = 'd231022be418a8bbf6d1623be0e8779e77e2856365e1b4fd8c6be699155b88e3';
+// --- Password Hashes ---
+const SETTINGS_HASHES = new Set([
+    'd231022be418a8bbf6d1623be0e8779e77e2856365e1b4fd8c6be699155b88e3', // gw2026
+    '39db5ecf48cdb26b15ab650f11bdea146e6caa0a172040ea50ae9fe2b313f641', // juan26
+]);
 
 // --- State ---
 const STATE = {
@@ -381,7 +384,7 @@ async function unlockSettings() {
     const input = document.getElementById('passwordInput');
     const hash = await hashPassword(input.value);
 
-    if (hash === SETTINGS_HASH) {
+    if (SETTINGS_HASHES.has(hash)) {
         document.getElementById('passwordGate').classList.add('hidden');
         document.getElementById('settingsSection').classList.remove('hidden');
         document.getElementById('passwordError').classList.add('hidden');
