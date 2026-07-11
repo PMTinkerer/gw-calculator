@@ -1,3 +1,5 @@
+@AGENTS.md
+
 # CLAUDE.md
 
 This file provides guidance to Claude Code (claude.ai/code) when working with code in this repository.
@@ -7,7 +9,7 @@ Internal cleaning fee calculator for Grand Welcome of Southern Coastal Maine (Kn
 
 ## Tech Stack
 - Vanilla HTML/CSS/JavaScript (no framework, no build step)
-- ExcelJS loaded from CDN (`index.html:366`) for Excel export (live formulas, multi-tab workbooks)
+- ExcelJS loaded from CDN (`index.html:375`) for Excel export (live formulas, multi-tab workbooks)
 - Hosted on GitHub Pages (static, no server) — legacy build type, deploys from main branch
 - No dependencies to install
 
@@ -18,18 +20,18 @@ Internal cleaning fee calculator for Grand Welcome of Southern Coastal Maine (Kn
 
 ## Project Structure
 - `index.html` — Single-page app with all HTML structure
-- `app.js` — All application logic (~950 lines, organized in sections below)
+- `app.js` — All application logic (~970 lines, organized in sections below)
 - `styles.css` — All styling
 - `agent.md` — Project summary and change log
 
 ## app.js Architecture
-The file has five distinct sections, in order:
-1. **Data constants** (lines 1-40) — `SUPPLY_ITEMS` array, `CHANNELS` array, `SETTINGS_HASH`, `STATE` object
+The file has six distinct sections, in order:
+1. **Data constants** (lines 1-72) — `SUPPLY_ITEMS` array, `CHANNELS` array, `SETTINGS_HASH`, `STATE` object
 2. **Calculation engine** (lines ~75-180) — `computeSupplyCosts()`, `recalculate()`. All business logic lives here.
 3. **DOM rendering** (lines ~185-370) — `renderResults()`, `renderChannelTable()`, `renderSupplyTable()`. Reads from `STATE.results` and updates the page.
 4. **Password protection** (lines ~370-430) — SHA-256 hash check, session storage persistence
-5. **Excel export** (lines ~430-870) — `exportExcel()`. Builds two-tab ExcelJS workbook with formulas. This is the largest section.
-6. **Event binding** (lines ~870-end) — `init()` maps input IDs to STATE keys, binds buttons
+5. **Excel export** (lines ~430-880) — `exportExcel()`. Builds two-tab ExcelJS workbook with formulas. This is the largest section.
+6. **Event binding** (lines ~880-end) — `init()` maps input IDs to STATE keys, binds buttons, dismisses modals
 
 ## Business Context
 The cleaning fee charged to guests bundles: cleaning vendor payment, consumables, linens, inspection, travel, welcome basket, and ACH fees. The calculator computes those costs, applies markup factors, grosses up for OTA booking fees, and verifies margin covers the 9% franchise royalty.
@@ -55,9 +57,11 @@ Three user-facing purposes:
 
 ## Key Implementation Details
 - **Input events**: All property/cost inputs use `change` event (blur/tab/enter), not `input` (keystroke). Prevents premature recalculation and popup triggers.
+- **Default values**: Property name, bedrooms, bathrooms, kitchens, and cleaning cost start empty (force user to fill in). Linens defaults to $0. Driving time (30 min) and welcome basket ($20) have defaults.
+- **Internal-use warning**: A modal popup shows on every page load warning that the tool is for internal use only. No session persistence — intentionally shows every time.
 - **Airbnb cap threshold**: $625. When Community Fee exceeds this, the label auto-switches to "COMMUNITY FEE" and a popup explains entering it in Guesty. Edge-triggered (fires only on transition, not every recalc). Excel export always says "CLEANING FEE" regardless.
 - **Inspection time formula**: `(20 + bedrooms×15 + fullBaths×12 + halfBaths×8 + kitchens×25) / 60` hours. Web tool and Excel export use the same multipliers. Excel export is fully formula-driven (individual room minutes → SUM total → total/60 hrs → downstream costs).
-- **Excel export**: Two tabs (Turnover Cost, Supply Rates). Uses ExcelJS with live formulas — not hardcoded values. Never includes margin mechanics or actual rates.
+- **Excel export**: Two tabs (Turnover Cost, Supply Rates). Uses ExcelJS with live formulas — not hardcoded values. Never includes margin mechanics or actual rates. The 7.5% allowance has an explanatory footnote in the Cost Assumptions section.
 - **Supply Items table**: Visible to all users (not password-gated). Located between Export button and Settings button.
 
 ## Common Tasks
